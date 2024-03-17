@@ -1,5 +1,6 @@
 package com.root.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -12,6 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+	@Autowired
+	public CostomAuthSuccessHandler successHandler;
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -40,9 +44,32 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-		http.csrf().disable().authorizeHttpRequests().requestMatchers("/", "/register", "/signin","/userCreated").permitAll()
-				.requestMatchers("/user/**").authenticated().and().formLogin().loginPage("/signin")
-				.loginProcessingUrl("/userlogin").defaultSuccessUrl("/user/profile").permitAll();
+		/*
+		 * http.csrf().disable().authorizeHttpRequests().requestMatchers("/",
+		 * "/register", "/signin","/userCreated").permitAll()
+		 * .requestMatchers("/user/**").authenticated().and().formLogin().loginPage(
+		 * "/signin")
+		 * .loginProcessingUrl("/userlogin").defaultSuccessUrl("/user/profile").
+		 * permitAll();
+		 * 
+		 * return http.build();
+		 */
+
+		/* that is Relo based autherization */
+
+		http.csrf().disable()
+		.authorizeHttpRequests()
+		  .requestMatchers("/user/**")
+		  .hasRole("USER")
+		  .requestMatchers("/admin/**")
+		  .hasRole("ADMIN")
+				.requestMatchers("/**").permitAll()
+		.and()
+		   .formLogin()
+				.loginPage("/signin")
+				.loginProcessingUrl("/userlogin")
+				.successHandler(successHandler)
+				.permitAll();
 
 		return http.build();
 	}

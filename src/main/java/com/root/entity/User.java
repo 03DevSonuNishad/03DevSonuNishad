@@ -4,8 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "user_verfy")
 public class User {
 
 	@Id
@@ -21,6 +23,27 @@ public class User {
 	private String mobileNo;
 
 	private String role;
+
+	private boolean enable;
+
+	private String verificationCode;
+	
+	
+	public boolean isEnable() {
+		return enable;
+	}
+
+	public void setEnable(boolean enable) {
+		this.enable = enable;
+	}
+
+	public String getVerificationCode() {
+		return verificationCode;
+	}
+
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
 
 	public String getMobileNo() {
 		return mobileNo;
@@ -73,7 +96,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", fullName=" + fullName + ", email=" + email + ", password=" + password
-				+ ", mobileNo=" + mobileNo + "]";
+				+ ", mobileNo=" + mobileNo + ", role=" + role + "]";
 	}
 
 }
